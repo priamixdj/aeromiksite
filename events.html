@@ -52,12 +52,12 @@
             <div></div>
         </div>
     </div>
-    <h1 id="loading" class="center" style="color: white;">Loading...</h1>
+    <h1 id="loading" class="center" style="color: white;">Questa pagina è in fase di manuntenzione</h1>
     <div id="content"></div>
 
     <script>
         const scriptUrl = 'https://script.googleusercontent.com/macros/echo?user_content_key=F9-Wwm7EAMEUCVenw3jmF0eSSvnmqT2iNL1iQ9lyDHVKFb_gtJPss8USGvJk_3WTENq_xiEd9Q7vi4goXI4cXCo6_JU1TKVtm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnMoYevS2in3RPP7fNFe2p5Vd5wRqmNS7yjuLp92jYquTtzPLVGhZDEaMhBKngqNFUU2n86eSwurcmylXh7RyrVcTPZAEKCTiO9z9Jw9Md8uu&lib=MGgtrMFWks7s8j_yqdgFW_hyozshvHoqV';
-    
+        
         function fetchData() {
             fetch(scriptUrl)
                 .then(response => response.json())
@@ -71,19 +71,19 @@
                 })
                 .catch(error => console.error('Errore:', error));
         }
-    
+        
         function updateDOM(data) {
             const contentDiv = document.getElementById('content');
             contentDiv.innerHTML = ''; // Pulisce il contenuto precedente
-    
+        
             data.forEach(item => {
-                if (item.visibile) { // se è visibile
+                if (item.visibile && item.visibile.toLowerCase() === "on") { // se è visibile
                     const dataContainer = document.createElement('div');
                     dataContainer.classList.add('data-container');
-    
+        
                     const today = new Date();
                     const itemDate = new Date(item.data);
-    
+        
                     if (itemDate > today) {
                         const futura = document.createElement('div');
                         futura.id = 'future_event';
@@ -92,47 +92,53 @@
                         futura.appendChild(futuraHeading);
                         dataContainer.appendChild(futura);
                     }
-    
+        
                     const data = document.createElement('h1');
-                    const firstFourChars = item.data.slice(0, 4);
-                    const sixthAndSeventhChars = item.data.slice(5, 7);
-                    const ninthAndTenthChars = item.data.slice(8, 10);
-    
-                    let giorno = parseInt(ninthAndTenthChars, 10); // da stringa a numero
-                    giorno = giorno + 1; // aumenta di 1
-    
-                    data.textContent = `${giorno}/${sixthAndSeventhChars}/${firstFourChars}`;
+                    
+                    if (item.data && typeof item.data === 'string') {
+                        const firstFourChars = item.data.slice(0, 4);
+                        const sixthAndSeventhChars = item.data.slice(5, 7);
+                        const ninthAndTenthChars = item.data.slice(8, 10);
+            
+                        let giorno = parseInt(ninthAndTenthChars, 10);
+                        giorno = giorno + 1;
+            
+                        data.textContent = `${giorno}/${sixthAndSeventhChars}/${firstFourChars}`;
+                    } else {
+                        data.textContent = "Data non disponibile";
+                    }
+                    
                     data.id = 'event_date';
                     dataContainer.appendChild(data);
-    
-                    if (item.titolo != '') {
+        
+                    if (item.titolo && item.titolo !== '') {
                         const titolo = document.createElement('h1');
                         titolo.textContent = `${item.titolo}`;
                         dataContainer.appendChild(titolo);
                     }
-                    if (item.via != '') {
+                    if (item.via && item.via !== '') {
                         const via = document.createElement('h1');
                         via.textContent = 'Via ' + `${item.via}`;
                         dataContainer.appendChild(via);
                     }
-                    if (item.citta != '') {
+                    if (item.citta && item.citta !== '') {
                         const citta = document.createElement('h1');
                         citta.textContent = `${item.citta}`;
                         dataContainer.appendChild(citta);
                     }
-                    if (item.provincia != '') {
+                    if (item.provincia && item.provincia !== '') {
                         const provincia = document.createElement('h1');
                         provincia.textContent = '(' + `${item.provincia}` + ')';
                         provincia.id = 'provincia';
                         dataContainer.appendChild(provincia);
                     }
-                    if (item.organizzatori != '') {
+                    if (item.organizzatori && item.organizzatori !== '') {
                         const organizzatori = document.createElement('h1');
                         organizzatori.id = 'organizzatori';
                         organizzatori.textContent = 'Da: ' + `${item.organizzatori}`;
                         dataContainer.appendChild(organizzatori);
                     }
-                    if (item.link != '') {
+                    if (item.link && item.link !== '') {
                         const link = document.createElement('a');
                         link.classList = 'aLink';
                         link.href = item.link;
@@ -140,22 +146,21 @@
                         link.textContent = item.link;
                         dataContainer.appendChild(link);
                     }
-                    if (item.info != '') {
+                    if (item.info && item.info !== '') {
                         const info = document.createElement('p');
                         info.classList = 'info';
                         info.textContent = item.info;
                         dataContainer.appendChild(info);
                     }
-    
+        
                     contentDiv.appendChild(dataContainer);
                 }
             });
         }
-    
+        
         window.onload = fetchData;
     </script>
     
-
     <footer style="position: fixed; padding-left: 20px; bottom: 20px;">
         <p><a id="ref_priamixCopy" target="_blank" href="https://mattepriaggg.github.io/me/index.html">Created by</a>
             <a style="font-style: italic; text-decoration: underline;" id="refa_priamixCopy" target="_blank" href="https://mattepriaggg.github.io/me/index.html">Priamix</a>
